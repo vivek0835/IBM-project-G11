@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            background: #007BFF;
+            color: white;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .auth-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f4f4f4;
+        }
+        .auth-box {
+            background: #fff;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            text-align: center;
+            width: 350px;
+        }
+        .auth-box h2 {
+            margin-bottom: 20px;
+        }
+        .auth-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .auth-box button {
+            width: 100%;
+            padding: 10px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .remember {
+            display: inline-flex;
+            align-items: center;
+            margin: 15px;
+            text-align: left; /* Align to the left */
+        }
+        
+        
+        .remember input {
+            margin-right: 5px;
+        }
+        .toggle-link {
+            margin-top: 10px;
+            color: #007BFF;
+            cursor: pointer;
+            display: block;
+        }
+        .creator {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        .image-section {
+            flex: 1;
+            background: url('https://img.freepik.com/free-vector/flat-feedback-concept-illustrated_23-2148946028.jpg?ga=GA1.1.1942080128.1738853237&semt=ais_hybrid') no-repeat center center/cover;
+        }
+    </style>
+    <script>
+        function toggleForm() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+            registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Sentiment Analysis</div>
+        <div class="content">
+            <div class="auth-section">
+                <div class="auth-box">
+                    <div id="login-form">
+                        <h2>Login</h2>
+                        <input type="text" placeholder="Username" required>
+                        <input type="password" placeholder="Password" required>
+                        <div class="remember">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember Me</label>
+                        </div>
+                        <button>Login</button>
+                        <span class="toggle-link" onclick="toggleForm()">Don't have an account? Register</span>
+                    </div>
+                    <div id="register-form" style="display: none;">
+                        <h2>Register</h2>
+                        <input type="text" placeholder="Username" required>
+                        <input type="email" placeholder="Email" required>
+                        <input type="password" placeholder="Password" required>
+                        <input type="password" placeholder="Confirm Password" required>
+                        <div class="remember">
+                            <input type="checkbox" id="terms">
+                            <label for="terms">I agree to the terms and conditions</label>
+                        </div>
+                        <button>Register</button>
+                        <span class="toggle-link" onclick="toggleForm()">Already have an account? Login</span>
+                    </div>
+                    <div class="creator">Login/Register here</div>
+                </div>
+            </div>
+            <div class="image-section"></div>
+        </div>
+    </div>
+</body>
+</html>
