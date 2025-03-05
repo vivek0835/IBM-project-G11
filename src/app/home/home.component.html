@@ -1,0 +1,20 @@
+<body>
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <a routerLink="/upload">Upload Data</a>
+        <a routerLink="/dashboard">Dashboard</a>
+    </div>
+    
+    <div class="content">
+        <div class="content-container"> <div class="upload-section">
+                <h2>Analyze Your Data</h2>
+                <input type="file" (change)="onFileSelected($event)" accept=".txt">
+                <br>
+                <textarea [(ngModel)]="textInput" placeholder="Enter text or upload a file..."></textarea>
+                <br>
+                <button (click)="analyzeSentiment()">Analyze Sentiment</button>
+                <div class="box">Sentiment Result: {{ sentimentResult }}</div>
+            </div>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,95 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.header {
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    background: #007BFF;
+    color: white;
+}
+
+.content {
+    display: flex;
+    flex: 1;
+}
+
+.auth-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4f4f4;
+}
+
+.auth-box {
+    background: #fff;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    text-align: center;
+    width: 350px;
+}
+
+.auth-box h2 {
+    margin-bottom: 20px;
+}
+
+.auth-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.auth-box button {
+    width: 100%;
+    padding: 10px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.remember {
+    display: inline-flex;
+    align-items: center;
+    margin: 15px;
+    text-align: left;
+}
+
+.remember input {
+    margin-right: 5px;
+}
+
+.toggle-link {
+    margin-top: 10px;
+    color: #007BFF;
+    cursor: pointer;
+    display: block;
+}
+
+.creator {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.image-section {
+    flex: 1;
+    background: url('https://img.freepik.com/free-vector/flat-feedback-concept-illustrated_23-2148946028.jpg?ga=GA1.1.1942080128.1738853237&semt=ais_hybrid') no-repeat center center/cover;
+}

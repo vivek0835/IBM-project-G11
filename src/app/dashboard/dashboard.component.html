@@ -1,0 +1,27 @@
+<body>
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <a routerLink="/home">Upload Data</a>
+        <a routerLink="/dashboard">Dashboard</a>
+    </div>
+    
+    <div class="content">
+        <div class="header">
+            <h1>DASHBOARD</h1>
+            <div class="login-status">Logged in</div>
+        </div>
+    
+        <div class="dashboard-grid">
+            <div class="box">TOTAL REVIEWS<br>{{ totalReviews }}</div>
+            <div class="box">POSITIVE REVIEWS<br>{{ positivePercentage }}%</div>
+            <div class="box">NEGATIVE REVIEWS<br>{{ negativePercentage }}%</div>
+        </div>
+    
+        <div class="reviews">
+            <h2>Reviews</h2>
+            <p *ngFor="let review of reviews">
+                <b>{{ review.name }}</b> - {{ review.stars }} - {{ review.title }} - {{ review.comment }}
+            </p>
+        </div>
+    </div>
+</body>
