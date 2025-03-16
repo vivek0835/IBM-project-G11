@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css'],
-    standalone: false
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  standalone: true, // Make it standalone
+  imports: [CommonModule, FormsModule]
 })
 export class LoginComponent {
   username: string = '';
@@ -13,14 +16,13 @@ export class LoginComponent {
   rememberMe: boolean = false;
   showLoginForm: boolean = true;
 
-  // Register form fields
   registerUsername: string = '';
   registerEmail: string = '';
   registerPassword: string = '';
   registerConfirmPassword: string = '';
   termsAccepted: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(@Inject(Router) private router: Router) {}
 
   toggleForm() {
     this.showLoginForm = !this.showLoginForm;
@@ -32,7 +34,7 @@ export class LoginComponent {
       if (this.rememberMe) {
         localStorage.setItem('username', this.username);
       }
-      this.router.navigate(['/home']); // Redirect to home page after login
+      this.router.navigate(['/home']);
     } else {
       alert('Invalid username or password');
     }
@@ -48,6 +50,6 @@ export class LoginComponent {
       return;
     }
     alert('Registration successful! Now login.');
-    this.toggleForm(); // Switch to login form after successful registration
+    this.toggleForm();
   }
 }

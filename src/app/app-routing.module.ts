@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { IntroComponent } from './intro/intro.component';
-import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'intro', pathMatch: 'full' }, // Default is Intro page
+  { path: '', redirectTo: 'intro', pathMatch: 'full' },
   { path: 'intro', component: IntroComponent },
-  { path: 'login', component: LoginComponent },
+  // Use loadComponent for standalone component
+  { 
+    path: 'login', 
+    loadComponent: () => import('./login/login.component').then(m => m.LoginComponent) 
+  },
   { path: 'home', component: HomeComponent },
   { path: 'dashboard', component: DashboardComponent }
 ];
@@ -17,4 +20,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
