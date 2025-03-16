@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist\\sentiment_analysis_application",
+    "public": "dist/sentiment_analysis_application/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
