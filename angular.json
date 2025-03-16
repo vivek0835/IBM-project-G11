@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "sentiment_analysis_application:build:production"
+              "buildTarget": "sentiment_analysis_application:build:production"
             },
             "development": {
-              "browserTarget": "sentiment_analysis_application:build:development"
+              "buildTarget": "sentiment_analysis_application:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "sentiment_analysis_application:build"
+            "buildTarget": "sentiment_analysis_application:build"
           }
         },
         "test": {
