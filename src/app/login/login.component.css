@@ -93,3 +93,20 @@
     flex: 1;
     background: url('https://img.freepik.com/free-vector/flat-feedback-concept-illustrated_23-2148946028.jpg?ga=GA1.1.1942080128.1738853237&semt=ais_hybrid') no-repeat center center/cover;
 }
+
+/* ✅ Google Sign-In Button Styling */
+.google-btn {
+    background-color: #4285f4;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}
+
+.google-btn:hover {
+    background-color: #357ae8;
+}

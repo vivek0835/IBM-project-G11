@@ -1,6 +1,7 @@
-# SentimentAnalysisApplication
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.6.
+## Setup Instructions
+1. Copy `src/environments/environment.example.ts` to `src/environments/environment.ts`
+2. Fill in the actual values for Firebase or other environment-specific settings
+3. You're good to go!
 
 ## Development server
 

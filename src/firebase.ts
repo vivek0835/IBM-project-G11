@@ -2,7 +2,7 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { environment } from '../../environments/environment'; // Import from environment file
+import { environment } from '../../environments/environment'; // Corrected import path
 
 //check if firebase is already initialized. Otherwise initialize.
 const firebaseApp = getApps().length === 0 ? initializeApp(environment.firebase) : getApps()[0];

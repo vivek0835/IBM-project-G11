@@ -7,11 +7,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 const routes: Routes = [
   { path: '', redirectTo: 'intro', pathMatch: 'full' },
   { path: 'intro', component: IntroComponent },
-  // Use loadComponent for standalone component
-  { 
-    path: 'login', 
-    loadComponent: () => import('./login/login.component').then(m => m.LoginComponent) 
-  },
+  { path: 'login', loadComponent: () => import('./login/login.component').then(m => m.LoginComponent) },
   { path: 'home', component: HomeComponent },
   { path: 'dashboard', component: DashboardComponent }
 ];

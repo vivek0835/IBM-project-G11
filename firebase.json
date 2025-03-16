@@ -1,13 +1,54 @@
 {
-    "hosting": {
-      "public": "dist/sentiment_analysis_application",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    }
+  "hosting": {
+    "public": "dist/sentiment_analysis_application",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=10"
+          }
+        ]
+      },
+      {
+        "source": "index.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "**/*.css",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=10"
+          }
+        ]
+      },
+      {
+        "source": "**/*.+(png|jpg|jpeg|gif|svg|webp)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=10"
+          }
+        ]
+      }
+    ]
   }
-  
+}

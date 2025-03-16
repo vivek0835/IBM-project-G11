@@ -1,12 +1,11 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
-
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css'],
-    encapsulation: ViewEncapsulation.None,
-    standalone: false
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class HomeComponent {
   textInput: string = '';
@@ -15,6 +14,7 @@ export class HomeComponent {
   positiveWords = ['good', 'happy', 'great', 'excellent', 'fantastic', 'positive', 'joy'];
   negativeWords = ['bad', 'sad', 'terrible', 'awful', 'negative', 'worst', 'angry'];
 
+  // ✅ Handle file upload
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -27,6 +27,7 @@ export class HomeComponent {
     }
   }
 
+  // ✅ Sentiment analysis logic
   analyzeSentiment(): void {
     if (!this.textInput) {
       alert('Please enter or upload text!');
@@ -34,7 +35,7 @@ export class HomeComponent {
     }
 
     let score = 0;
-    let words = this.textInput.toLowerCase().split(/\s+/);
+    const words = this.textInput.toLowerCase().split(/\s+/);
 
     words.forEach(word => {
       if (this.positiveWords.includes(word)) score++;
@@ -46,7 +47,7 @@ export class HomeComponent {
     } else if (score < 0) {
       this.sentimentResult = 'Negative Sentiment 😞';
     } else {
-      this.sentimentResult = 'Neutral Sentiment';
+      this.sentimentResult = 'Neutral Sentiment 😐';
     }
   }
 }

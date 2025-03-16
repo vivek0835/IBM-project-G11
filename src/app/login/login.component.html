@@ -6,20 +6,26 @@
                 <!-- Login Form -->
                 <div id="login-form" *ngIf="showLoginForm">
                     <h2>Login</h2>
-                    <input type="text" placeholder="Username" [(ngModel)]="username" required>
+                    <input type="text" placeholder="Email" [(ngModel)]="email" required>
                     <input type="password" placeholder="Password" [(ngModel)]="password" required>
                     <div class="remember">
                         <input type="checkbox" id="remember" [(ngModel)]="rememberMe">
                         <label for="remember">Remember Me</label>
                     </div>
                     <button (click)="login()">Login</button>
+
+                    <!-- ✅ Google Sign-In Button -->
+                    <button (click)="loginWithGoogle()" class="google-btn">
+                        Sign in with Google
+                    </button>
+
                     <span class="toggle-link" (click)="toggleForm()">Don't have an account? Register</span>
                 </div>
+
 
                 <!-- Register Form -->
                 <div id="register-form" *ngIf="!showLoginForm">
                     <h2>Register</h2>
-                    <input type="text" placeholder="Username" [(ngModel)]="registerUsername" required>
                     <input type="email" placeholder="Email" [(ngModel)]="registerEmail" required>
                     <input type="password" placeholder="Password" [(ngModel)]="registerPassword" required>
                     <input type="password" placeholder="Confirm Password" [(ngModel)]="registerConfirmPassword" required>
