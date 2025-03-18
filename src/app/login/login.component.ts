@@ -24,7 +24,7 @@ export class LoginComponent {
   registerEmail: string = '';
   registerPassword: string = '';
   registerConfirmPassword: string = '';
-  registerPhoneNumber: string = '';
+  registerPhoneNumber: string = '+91'+'';
   termsAccepted: boolean = false;
   verificationId: string = '';  // Store the verification ID received from Firebase
   registrationInProgress: boolean = false;  // To track if registration is ongoing
