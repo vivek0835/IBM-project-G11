@@ -1,30 +1,27 @@
+// auth.guard.ts
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
-import { Observable, from } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private auth: Auth
-  ) {}
 
-  canActivate(): Observable<boolean> {
-    return from(
-      new Promise<boolean>(resolve => {
-        this.auth.onAuthStateChanged(user => {
-          if (user) {
-            resolve(true); // ✅ User is authenticated → allow navigation
-          } else {
-            this.router.navigate(['/intro']);
-            resolve(false); // ✅ User is not authenticated → redirect to intro
-          }
-        });
-      })
-    ).pipe(take(1)); // ✅ Complete the observable after the first value
+  constructor(private authService: AuthService, private router: Router) {}
+
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean {
+    if (this.authService.isAuthenticated) {
+      // If authenticated, allow access
+      return true;
+    } else {
+      // If not authenticated, store the attempted URL and redirect to the login page
+      this.authService.redirectUrl = state.url;  // Store the attempted URL
+      this.router.navigate(['/login']);  // Navigate to login page
+      return false;
+    }
   }
 }

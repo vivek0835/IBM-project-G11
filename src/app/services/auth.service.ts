@@ -1,35 +1,35 @@
-import { Component } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+// auth.service.ts
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+@Injectable({
+  providedIn: 'root'
 })
-export class LoginComponent {
-  email: string = '';
-  password: string = '';
-  errorMessage: string = '';
+export class AuthService {
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  redirectUrl: string | null = null; // Store the attempted URL
 
-  constructor(private authService: AuthService) {}
-
-  login() {
-    this.authService.loginWithEmail(this.email, this.password)
-      .then(() => {
-        console.log('Login successful');
-      })
-      .catch(err => {
-        this.errorMessage = err.message;
-      });
+  constructor() {
+    // Initialize authentication status based on your application's logic
+    const token = localStorage.getItem('authToken');
+    this.isAuthenticatedSubject.next(!!token); // Set authentication status based on token
   }
 
-  loginWithGoogle() {
-    this.authService.loginWithGoogle()
-      .then(() => {
-        console.log('Google login successful');
-      })
-      .catch(err => {
-        this.errorMessage = err.message;
-      });
+  get isAuthenticated() {
+    return this.isAuthenticatedSubject.value;
+  }
+
+  login() {
+    // Implement your login logic here
+    // On successful login:
+    localStorage.setItem('authToken', 'your-auth-token');  // Store token in localStorage
+    this.isAuthenticatedSubject.next(true);  // Mark as authenticated
+  }
+
+  logout() {
+    // Implement your logout logic here
+    // On logout:
+    localStorage.removeItem('authToken');
+    this.isAuthenticatedSubject.next(false); // Mark as not authenticated
   }
 }

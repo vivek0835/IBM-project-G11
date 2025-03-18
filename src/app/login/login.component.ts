@@ -6,6 +6,7 @@ import { Auth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPasswo
 import { MfaComponent } from '../mfa/mfa.component';
 import { FirebaseService } from '../firebase.service';
 import { PhoneAuthProvider, signInWithCredential } from '@firebase/auth';
+import { AuthService } from '../services/auth.service'; // Ensure AuthService is imported
 
 @Component({
   selector: 'app-login',
@@ -32,14 +33,19 @@ export class LoginComponent {
 
   isVerifyingPhone: boolean = false;
 
-  constructor(private router: Router, private auth: Auth, private firebaseService: FirebaseService) {}
+  constructor(
+    private router: Router,
+    private auth: Auth,
+    private firebaseService: FirebaseService,
+    private authService: AuthService // Inject AuthService
+  ) {}
 
-  // ✅ Toggle between Login and Register forms
+  // Toggle between Login and Register forms
   toggleForm() {
     this.showLoginForm = !this.showLoginForm;
   }
 
-  // ✅ Handle Login with Firebase
+  // Handle Login with Firebase
   async login() {
     if (!this.email || !this.password) {
       alert('Please enter both email and password.');
@@ -53,14 +59,20 @@ export class LoginComponent {
         localStorage.setItem('email', this.email);
       }
       alert('Login successful!');
-      this.router.navigate(['/home']);
+      
+      // Set authentication status in AuthService
+      this.authService.login();
+
+      // Redirect to the intended URL or default to '/home'
+      const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
+      this.router.navigate([redirectUrl]);
     } catch (error: any) {
       console.error('Login error:', error);
       alert(`Login failed: ${error.message}`);
     }
   }
 
-  // ✅ Handle Registration with Firebase and MFA
+  // Handle Registration with Firebase and MFA
   async register() {
     if (!this.termsAccepted) {
       alert('You must agree to the terms and conditions.');
@@ -102,7 +114,7 @@ export class LoginComponent {
     }
   }
 
-  // ✅ Handle MFA Success
+  // Handle MFA Success
   async onMfaSuccess() {
     try {
       // Make sure the phone number verification was successful before proceeding.
@@ -123,31 +135,38 @@ export class LoginComponent {
     }
   }
 
-  // ✅ Handle MFA Failure
+  // Handle MFA Failure
   onMfaFailed(error: any) {
     console.error('MFA verification failed:', error);
     alert(`MFA verification failed: ${error.message}`);
     this.isVerifyingPhone = false;
   }
 
-  // ✅ Handle Google Sign-In
+  // Handle Google Sign-In
   async loginWithGoogle() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(this.auth, provider);
       alert(`Welcome ${result.user.displayName}`);
-      this.router.navigate(['/home']);
+      
+      // Set authentication status in AuthService
+      this.authService.login();
+
+      // Redirect to the intended URL or default to '/home'
+      const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
+      this.router.navigate([redirectUrl]);
     } catch (error: any) {
       console.error('Google Sign-In Error:', error);
       alert(`Login failed: ${error.message}`);
     }
   }
 
-  // ✅ Handle Logout
+  // Handle Logout
   async logout() {
     try {
       await signOut(this.auth);
       localStorage.removeItem('isLoggedIn');
+      this.authService.logout(); // Update AuthService on logout
       this.router.navigate(['/intro']);
     } catch (error) {
       console.error('Logout error:', error);
