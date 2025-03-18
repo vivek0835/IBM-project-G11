@@ -3,7 +3,7 @@
     <div class="content">
         <div class="auth-section">
             <div class="auth-box">
-                <!-- Login Form -->
+                <!-- ✅ Login Form -->
                 <div id="login-form" *ngIf="showLoginForm">
                     <h2>Login</h2>
                     <input type="text" placeholder="Email" [(ngModel)]="email" required>
@@ -22,18 +22,31 @@
                     <span class="toggle-link" (click)="toggleForm()">Don't have an account? Register</span>
                 </div>
 
-
-                <!-- Register Form -->
+                <!-- ✅ Register Form -->
                 <div id="register-form" *ngIf="!showLoginForm">
                     <h2>Register</h2>
                     <input type="email" placeholder="Email" [(ngModel)]="registerEmail" required>
                     <input type="password" placeholder="Password" [(ngModel)]="registerPassword" required>
                     <input type="password" placeholder="Confirm Password" [(ngModel)]="registerConfirmPassword" required>
+                    <input type="tel" placeholder="Phone number" [(ngModel)]="registerPhoneNumber" required>
+
                     <div class="remember">
                         <input type="checkbox" id="terms" [(ngModel)]="termsAccepted">
-                        <label for="terms">I agree to the terms and conditions</label>
+                        <label for="terms">
+                            I agree to the <a href="/terms" target="_blank">Terms and Conditions</a>
+                        </label>
                     </div>
+
                     <button (click)="register()">Register</button>
+
+                    <!-- ✅ MFA Component for Verification -->
+                    <app-mfa
+                        *ngIf="isVerifyingPhone"
+                        [phoneNumber]="registerPhoneNumber"
+                        (verificationSuccess)="onMfaSuccess()"
+                        (verificationFailed)="onMfaFailed($event)"
+                    ></app-mfa>
+
                     <span class="toggle-link" (click)="toggleForm()">Already have an account? Login</span>
                 </div>
 

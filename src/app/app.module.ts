@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,24 +14,26 @@ import { environment } from '../environments/environment';
 // FormsModule & ReactiveFormsModule imports
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { MfaComponent } from './mfa/mfa.component';  // Import MfaComponent here
+
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    HomeComponent
+    HomeComponent // Declare MfaComponent here
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule
+    FormsModule,  // Ensure FormsModule is imported here
+    ReactiveFormsModule,
+    MfaComponent 
   ],
   providers: [
     DataService,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth())
   ],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
