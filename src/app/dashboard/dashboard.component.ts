@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Auth } from '@angular/fire/auth';
+import { AuthService } from '../services/auth.service'; // Import AuthService
 
 @Component({
     selector: 'app-dashboard',
@@ -17,7 +20,23 @@ export class DashboardComponent implements OnInit {
     { name: 'Mukesh Ambani', stars: '★☆☆☆☆', title: 'Bad Product', comment: 'The product does not perform as advertised.' }
   ];
 
-  constructor() {}
+  constructor(
+    private router: Router,
+    private auth: Auth,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {}
+
+  // ✅ Logout Function
+  async logout() {
+    try {
+      await this.auth.signOut(); // Sign out from Firebase
+      localStorage.removeItem('isLoggedIn'); // Remove login state
+      this.authService.logout(); // Update AuthService status
+      this.router.navigate(['/intro']); // Redirect to intro page
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  }
 }

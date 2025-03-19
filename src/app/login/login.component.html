@@ -3,18 +3,26 @@
     <div class="content">
         <div class="auth-section">
             <div class="auth-box">
-                <!-- ✅ Login Form -->
+                <div *ngIf="message" class="alert" [ngClass]="{'alert-success': messageType === 'success', 'alert-error': messageType === 'error'}">
+                    {{ message }}
+                </div>
+
+                <!-- Login Form -->
                 <div id="login-form" *ngIf="showLoginForm">
                     <h2>Login</h2>
                     <input type="text" placeholder="Email" [(ngModel)]="email" required>
                     <input type="password" placeholder="Password" [(ngModel)]="password" required>
                     <div class="remember">
-                        <input type="checkbox" id="remember" [(ngModel)]="rememberMe">
-                        <label for="remember">Remember Me</label>
+                        <div class="checkbox-wrapper">
+                            <label for="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <input type="checkbox" id="remember" [(ngModel)]="rememberMe">
+                            <label for="remember">Remember Me</label>
+                        </div>
                     </div>
+                    
                     <button (click)="login()">Login</button>
 
-                    <!-- ✅ Google Sign-In Button -->
+                    <!-- Google Sign-In Button -->
                     <button (click)="loginWithGoogle()" class="google-btn">
                         Sign in with Google
                     </button>
@@ -22,7 +30,7 @@
                     <span class="toggle-link" (click)="toggleForm()">Don't have an account? Register</span>
                 </div>
 
-                <!-- ✅ Register Form -->
+                <!-- Register Form -->
                 <div id="register-form" *ngIf="!showLoginForm">
                     <h2>Register</h2>
                     <input type="email" placeholder="Email" [(ngModel)]="registerEmail" required>
@@ -33,13 +41,13 @@
                     <div class="remember">
                         <input type="checkbox" id="terms" [(ngModel)]="termsAccepted">
                         <label for="terms">
-                            I agree to the <a href="/terms" target="_blank">Terms and Conditions</a>
+                            I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>
                         </label>
                     </div>
 
                     <button (click)="register()">Register</button>
 
-                    <!-- ✅ MFA Component for Verification -->
+                    <!-- MFA Component for Verification -->
                     <app-mfa
                         *ngIf="isVerifyingPhone"
                         [phoneNumber]="registerPhoneNumber"
@@ -49,8 +57,6 @@
 
                     <span class="toggle-link" (click)="toggleForm()">Already have an account? Login</span>
                 </div>
-
-                <div class="creator">Login/Register here</div>
             </div>
         </div>
         <div class="image-section"></div>

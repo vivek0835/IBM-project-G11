@@ -32,6 +32,8 @@ export class LoginComponent {
   verificationFailed: EventEmitter<any> = new EventEmitter(); // To emit failure events
 
   isVerifyingPhone: boolean = false;
+  message: string = '';
+  messageType: 'success' | 'error' | '' = '';
 
   constructor(
     private router: Router,
@@ -43,12 +45,25 @@ export class LoginComponent {
   // Toggle between Login and Register forms
   toggleForm() {
     this.showLoginForm = !this.showLoginForm;
+    this.message = ''; // Clear message when toggling forms
+  }
+
+  //Shows the message
+  clearMessage() {
+    this.message = '';
+    this.messageType = '';
+  }
+
+  //Set Message Function
+  setMessage(message: string, type: 'success' | 'error') {
+    this.message = message;
+    this.messageType = type;
   }
 
   // Handle Login with Firebase
   async login() {
     if (!this.email || !this.password) {
-      alert('Please enter both email and password.');
+      this.setMessage('Please enter both email and password.', 'error');
       return;
     }
 
@@ -58,7 +73,7 @@ export class LoginComponent {
       if (this.rememberMe) {
         localStorage.setItem('email', this.email);
       }
-      alert('Login successful!');
+      this.setMessage('Login successful!', 'success');
       
       // Set authentication status in AuthService
       this.authService.login();
@@ -68,28 +83,27 @@ export class LoginComponent {
       this.router.navigate([redirectUrl]);
     } catch (error: any) {
       console.error('Login error:', error);
-      alert(`Login failed: ${error.message}`);
+      this.setMessage(`Login failed: ${error.message}`, 'error');
     }
   }
 
   // Handle Registration with Firebase and MFA
   async register() {
     if (!this.termsAccepted) {
-      alert('You must agree to the terms and conditions.');
+      this.setMessage('You must agree to the terms and conditions.', 'error');
       return;
     }
 
     if (this.registerPassword !== this.registerConfirmPassword) {
-      alert('Passwords do not match.');
+      this.setMessage('Passwords do not match.', 'error');
       return;
     }
 
     if (!this.registerPhoneNumber) {
-      alert('Phone number is required.');
+      this.setMessage('Phone number is required.', 'error');
       return;
     }
 
-    // At this point, you're just preparing for phone verification
     this.isVerifyingPhone = true; // Indicate that the phone number is being verified
   }
 
@@ -120,25 +134,25 @@ export class LoginComponent {
       // Make sure the phone number verification was successful before proceeding.
       if (!this.registerEmail || !this.registerPassword) {
         console.error('Email or password is missing.');
-        alert('Please provide a valid email and password.');
+        this.setMessage('Please provide a valid email and password.', 'error');
         return;
       }
 
       // Create the user with email/password after phone verification
       await createUserWithEmailAndPassword(this.auth, this.registerEmail, this.registerPassword);
-      alert('Registration successful! Now login.');
+      this.setMessage('Registration successful! Now login.', 'success');
       this.isVerifyingPhone = false;
       this.toggleForm(); // Switch to login form
     } catch (error: any) {
       console.error('Registration error:', error);
-      alert(`Registration failed: ${error.message}`);
+      this.setMessage(`Registration failed: ${error.message}`, 'error');
     }
   }
 
   // Handle MFA Failure
   onMfaFailed(error: any) {
     console.error('MFA verification failed:', error);
-    alert(`MFA verification failed: ${error.message}`);
+    this.setMessage(`MFA verification failed: ${error.message}`, 'error');
     this.isVerifyingPhone = false;
   }
 
@@ -147,7 +161,7 @@ export class LoginComponent {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(this.auth, provider);
-      alert(`Welcome ${result.user.displayName}`);
+      this.setMessage(`Welcome ${result.user.displayName}`, 'success');
       
       // Set authentication status in AuthService
       this.authService.login();
@@ -157,19 +171,8 @@ export class LoginComponent {
       this.router.navigate([redirectUrl]);
     } catch (error: any) {
       console.error('Google Sign-In Error:', error);
-      alert(`Login failed: ${error.message}`);
+      this.setMessage(`Login failed: ${error.message}`, 'error');
     }
   }
 
-  // Handle Logout
-  async logout() {
-    try {
-      await signOut(this.auth);
-      localStorage.removeItem('isLoggedIn');
-      this.authService.logout(); // Update AuthService on logout
-      this.router.navigate(['/intro']);
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  }
 }
