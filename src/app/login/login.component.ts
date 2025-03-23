@@ -2,11 +2,13 @@ import { Component, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Auth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from '@angular/fire/auth';
 import { MfaComponent } from '../mfa/mfa.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SecurityContext } from '@angular/core';
 import { FirebaseService } from '../firebase.service';
 import { PhoneAuthProvider, signInWithCredential } from '@firebase/auth';
-import { AuthService } from '../services/auth.service'; // Ensure AuthService is imported
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +28,7 @@ export class LoginComponent {
   registerConfirmPassword: string = '';
   registerPhoneNumber: string = '+91'+'';
   termsAccepted: boolean = false;
-  verificationId: string = '';  // Store the verification ID received from Firebase
+  private verificationId: string = '';  // Store the verification ID received from Firebase
   registrationInProgress: boolean = false;  // To track if registration is ongoing
   verificationSuccess: EventEmitter<void> = new EventEmitter(); // To emit success events
   verificationFailed: EventEmitter<any> = new EventEmitter(); // To emit failure events
@@ -39,7 +41,8 @@ export class LoginComponent {
     private router: Router,
     private auth: Auth,
     private firebaseService: FirebaseService,
-    private authService: AuthService // Inject AuthService
+    private authService: AuthService, // Inject AuthService
+    private sanitizer: DomSanitizer
   ) {}
 
   // Toggle between Login and Register forms
@@ -56,8 +59,11 @@ export class LoginComponent {
 
   //Set Message Function
   setMessage(message: string, type: 'success' | 'error') {
-    this.message = message;
+    this.message = this.sanitizer.sanitize(SecurityContext.HTML, message) || '';
     this.messageType = type;
+    setTimeout(() => {
+      this.clearMessage();
+    }, 2000);
   }
 
   // Handle Login with Firebase
@@ -66,26 +72,26 @@ export class LoginComponent {
       this.setMessage('Please enter both email and password.', 'error');
       return;
     }
-
+  
     try {
-      await signInWithEmailAndPassword(this.auth, this.email, this.password);
-      localStorage.setItem('isLoggedIn', 'true');
+      await this.authService.login(this.email, this.password); //Use AuthService login
+      sessionStorage.setItem('isLoggedIn', 'true');
       if (this.rememberMe) {
-        localStorage.setItem('email', this.email);
+        sessionStorage.setItem('email', this.email);
       }
       this.setMessage('Login successful!', 'success');
-      
-      // Set authentication status in AuthService
-      this.authService.login();
-
+  
       // Redirect to the intended URL or default to '/home'
-      const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
-      this.router.navigate([redirectUrl]);
+      setTimeout(() => {
+        const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
+        this.router.navigate([redirectUrl]);
+      }, 2000);
     } catch (error: any) {
       console.error('Login error:', error);
       this.setMessage(`Login failed: ${error.message}`, 'error');
     }
   }
+  
 
   // Handle Registration with Firebase and MFA
   async register() {
@@ -161,18 +167,23 @@ export class LoginComponent {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(this.auth, provider);
-      this.setMessage(`Welcome ${result.user.displayName}`, 'success');
-      
-      // Set authentication status in AuthService
-      this.authService.login();
-
-      // Redirect to the intended URL or default to '/home'
-      const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
-      this.router.navigate([redirectUrl]);
+  
+      if (result.user) {
+        this.setMessage(`Welcome ${result.user.displayName}`, 'success');
+        
+        //Use the new public method to update authentication state
+        this.authService.updateAuthState(result.user);
+  
+        // Redirect to the intended URL or default to '/home'
+        setTimeout(() => {
+          const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
+          this.router.navigate([redirectUrl]);
+        }, 2000);
+      }
     } catch (error: any) {
       console.error('Google Sign-In Error:', error);
       this.setMessage(`Login failed: ${error.message}`, 'error');
     }
-  }
+  } 
 
 }

@@ -1,3 +1,4 @@
+// Normal imports
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -14,18 +15,18 @@ import { environment } from '../environments/environment';
 // FormsModule & ReactiveFormsModule imports
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { MfaComponent } from './mfa/mfa.component';  // Import MfaComponent here
+import { MfaComponent } from './mfa/mfa.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    HomeComponent // Declare MfaComponent here
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule,  // Ensure FormsModule is imported here
+    FormsModule,
     ReactiveFormsModule,
     MfaComponent 
   ],

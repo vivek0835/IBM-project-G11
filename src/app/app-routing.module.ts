@@ -1,4 +1,3 @@
-// app-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { IntroComponent } from './intro/intro.component';
@@ -7,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
+import { NotfoundComponent } from './notfound/notfound.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'intro', pathMatch: 'full' },
@@ -14,7 +14,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },  // Protected route
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },  // Protected route
-  { path: 'terms', component: TermsAndConditionsComponent }
+  { path: 'terms', component: TermsAndConditionsComponent },
+  { path: '**', component: NotfoundComponent }
 ];
 
 @NgModule({

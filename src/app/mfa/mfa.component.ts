@@ -17,7 +17,7 @@ export class MfaComponent implements OnInit {
 
   appVerifier: any;
   verificationCode: string = '';
-  verificationId: string = '';
+  private verificationId: string = '';
   codeSent: boolean = false;
 
   constructor(private firebaseService: FirebaseService) {}
@@ -31,7 +31,7 @@ export class MfaComponent implements OnInit {
     this.appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
       size: 'normal',
       callback: (response: string) => {
-        console.log('reCAPTCHA completed:', response);
+        console.debug('reCAPTCHA completed:', response);
       }
     });
   }
@@ -40,11 +40,11 @@ export class MfaComponent implements OnInit {
     const auth: Auth = this.firebaseService.getAuthInstance();
     try {
       const confirmationResult: ConfirmationResult = await signInWithPhoneNumber(auth, this.phoneNumber, this.appVerifier);
-      console.log('Verification code sent');
+      console.debug('Verification code sent');
       this.verificationId = confirmationResult.verificationId;
       this.codeSent = true;
     } catch (error) {
-      console.error('Failed to send code:', error);
+      console.debug('Failed to send code:', error);
       this.verificationFailed.emit(error);
     }
   }
@@ -53,16 +53,16 @@ export class MfaComponent implements OnInit {
     const auth: Auth = this.firebaseService.getAuthInstance();
     try {
       if (!this.verificationId || !code) {
-        console.error('Verification ID or code is missing');
+        console.debug('Verification ID or code is missing');
         return;
       }
 
       const credential = PhoneAuthProvider.credential(this.verificationId, code);
       await signInWithCredential(auth, credential);
-      console.log('Phone number verified successfully');
+      console.debug('Phone number verified successfully');
       this.verificationSuccess.emit();  // Emit success after the code is successfully verified
     } catch (error) {
-      console.error('Failed to verify the code:', error);
+      console.debug('Failed to verify the code:', error);
       this.verificationFailed.emit(error);
     }
   }

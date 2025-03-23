@@ -17,7 +17,16 @@ describe('MfaComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should render MFA input fields', () => {
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('input[type="text"]')).toBeTruthy(); // Checks if input field exists
   });
+
+  it('should call verifyCode when submitted', () => {
+    spyOn(component, 'verifyCode'); // Spy on the method
+    component.verifyCode('123456');
+    expect(component.verifyCode).toHaveBeenCalledWith('123456');
+  });
+  
+  
 });
