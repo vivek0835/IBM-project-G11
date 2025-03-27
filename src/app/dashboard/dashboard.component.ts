@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  // ✅ Logout Function
+  // Logout Function
   async logout() {
     try {
       await this.auth.signOut(); // Sign out from Firebase

@@ -10,8 +10,8 @@ export class IntroComponent {
 
   constructor(private router: Router) {}
 
-  // ✅ Handle navigation to login page
+  // Handle navigation to login page
   goToLogin() {
-    this.router.navigate(['/login']); // ✅ Route should match the path in app-routing.module.ts
+    this.router.navigate(['/login']); // Route should match the path in app-routing.module.ts
   }
 }

@@ -14,7 +14,7 @@ export class HomeComponent {
   positiveWords = ['good', 'happy', 'great', 'excellent', 'fantastic', 'positive', 'joy'];
   negativeWords = ['bad', 'sad', 'terrible', 'awful', 'negative', 'worst', 'angry'];
 
-  // ✅ Handle file upload
+  // Handle file upload
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -27,7 +27,7 @@ export class HomeComponent {
     }
   }
 
-  // ✅ Sentiment analysis logic
+  // Sentiment analysis logic
   analyzeSentiment(): void {
     if (!this.textInput) {
       alert('Please enter or upload text!');
