@@ -1,27 +1,66 @@
 <body>
-    <div class="sidebar">
-        <h2>Menu</h2>
-        <a routerLink="/home">Upload Data</a>
-        <a routerLink="/dashboard">Dashboard</a>
+  <div class="sidebar">
+    <h2>Menu</h2>
+    <a [routerLink]="['/home']">Upload Data</a>
+    <a [routerLink]="['/dashboard']">Dashboard</a>
+  </div>
+
+  <div class="content">
+    <div class="header">
+      <h1>DASHBOARD</h1>
+      <button class="logout-btn" (click)="logout()">Logout</button>
     </div>
-    
-    <div class="content">
-        <div class="header">
-            <h1>DASHBOARD</h1>
-            <button class="logout-btn" (click)="logout()">Logout</button>
-        </div>
-    
-        <div class="dashboard-grid">
-            <div class="box">TOTAL REVIEWS<br>{{ totalReviews }}</div>
-            <div class="box">POSITIVE REVIEWS<br>{{ positivePercentage }}%</div>
-            <div class="box">NEGATIVE REVIEWS<br>{{ negativePercentage }}%</div>
-        </div>
-    
-        <div class="reviews">
-            <h2>Reviews</h2>
-            <p *ngFor="let review of reviews">
-                <b>{{ review.name }}</b> - {{ review.stars }} - {{ review.title }} - {{ review.comment }}
-            </p>
-        </div>
+
+    <div class="dashboard-header">
+      <h2>{{ productName }}</h2>
+      <p class="rating">⭐ {{ averageRating }}/5</p>
     </div>
+
+    <div class="dashboard-grid">
+      <div class="box total-reviews-box">
+        <span>Total Reviews</span>
+        <span class="stat-number">{{ totalReviews }}</span>
+      </div>    
+      <div class="box">
+        <span>Positive Reviews</span>
+        <div class="chart-container">
+          <div echarts [options]="positiveChartOptions" class="echart"></div>
+        </div>
+      </div>
+      <div class="box">
+        <span>Neutral Reviews</span>
+        <div class="chart-container">
+          <div echarts [options]="neutralChartOptions" class="echart"></div>
+        </div>
+      </div>
+      <div class="box">
+        <span>Negative Reviews</span>
+        <div class="chart-container">
+          <div echarts [options]="negativeChartOptions" class="echart"></div>
+        </div>
+      </div>
+    </div>    
+
+    <div class="reviews">
+      <h2>Reviews</h2>
+      <div class="review-category">
+        <h3>Positive Reviews</h3>
+        <div class="review-list">
+          <p *ngFor="let review of positiveReviews">{{ review.review_text | linebreak }}</p>
+        </div>
+      </div>
+      <div class="review-category">
+        <h3>Negative Reviews</h3>
+        <div class="review-list">
+          <p *ngFor="let review of negativeReviews">{{ review.review_text | linebreak }}</p>
+        </div>
+      </div>
+      <div class="review-category">
+        <h3>Neutral Reviews</h3>
+        <div class="review-list">
+          <p *ngFor="let review of neutralReviews">{{ review.review_text | linebreak }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>

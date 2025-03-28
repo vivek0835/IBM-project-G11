@@ -1,53 +1,56 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component } from '@angular/core';
+import { ApiService } from '../services/api.service';
+import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
+  imports: [RouterModule, CommonModule],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
-  encapsulation: ViewEncapsulation.None,
-  standalone: false
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  textInput: string = '';
-  sentimentResult: string = 'Neutral Sentiment';
+  selectedFile: File | null = null;
+  uploadMessage: string = '';
+  messageColor: string = '';
+  loading: boolean = false; // ✅ Loading state
 
-  positiveWords = ['good', 'happy', 'great', 'excellent', 'fantastic', 'positive', 'joy'];
-  negativeWords = ['bad', 'sad', 'terrible', 'awful', 'negative', 'worst', 'angry'];
+  constructor(private apiService: ApiService, private router: Router) {}
 
-  // Handle file upload
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.textInput = e.target?.result as string;
-      };
-      reader.readAsText(file);
-    }
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
   }
-
-  // Sentiment analysis logic
+  
   analyzeSentiment(): void {
-    if (!this.textInput) {
-      alert('Please enter or upload text!');
+    if (!this.selectedFile) {
+      alert('Please select a file!');
       return;
     }
 
-    let score = 0;
-    const words = this.textInput.toLowerCase().split(/\s+/);
+    this.loading = true; // ✅ Show loading spinner
 
-    words.forEach(word => {
-      if (this.positiveWords.includes(word)) score++;
-      if (this.negativeWords.includes(word)) score--;
+    this.apiService.uploadCSV(this.selectedFile).subscribe({
+      next: () => {
+        this.loading = false;
+        this.uploadMessage = 'File Uploaded Successfully!';
+        this.messageColor = 'green';
+
+        setTimeout(() => {
+          this.uploadMessage = '';
+          this.router.navigate(['/dashboard']); // ✅ Redirect after 1s
+        }, 1000);
+      },
+      error: () => {
+        this.loading = false;
+        this.uploadMessage = 'File Upload Failed!';
+        this.messageColor = 'red';
+
+        setTimeout(() => {
+          this.uploadMessage = '';
+        }, 1000);
+      }
     });
-
-    if (score > 0) {
-      this.sentimentResult = 'Positive Sentiment 😊';
-    } else if (score < 0) {
-      this.sentimentResult = 'Negative Sentiment 😞';
-    } else {
-      this.sentimentResult = 'Neutral Sentiment 😐';
-    }
   }
 }

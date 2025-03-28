@@ -85,7 +85,7 @@ export class LoginComponent {
       setTimeout(() => {
         const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
         this.router.navigate([redirectUrl]);
-      }, 2000);
+      }, 1000);
     } catch (error: any) {
       console.error('Login error:', error);
       this.setMessage(`Login failed: ${error.message}`, 'error');

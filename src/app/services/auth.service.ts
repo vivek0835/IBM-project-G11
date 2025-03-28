@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth, signInWithEmailAndPassword, signOut, onAuthStateChanged, User } from '@angular/fire/auth';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import { Auth, signInWithEmailAndPassword, signOut, onAuthStateChanged, User, user } from '@angular/fire/auth';
+import { BehaviorSubject, filter, firstValueFrom, Observable, map, first } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
+  private isAuthenticatedSubject = new BehaviorSubject<boolean | null>(null);
+  isAuthenticated$ = this.isAuthenticatedSubject.asObservable().pipe(
+    filter(value => value !== null) // ✅ Prevents null from triggering guards
+  );
   redirectUrl: string | null = null; // Store the attempted URL
   user: User | null = null;
 
   constructor(private auth: Auth, private router: Router) {
     //Listen for Firebase authentication state changes
     onAuthStateChanged(this.auth, (user) => {
+      console.log('Auth State Changed:', user);
       this.updateAuthState(user);
     });
   }
@@ -39,21 +42,27 @@ export class AuthService {
   }
 
   checkAuthState(): Observable<boolean> {
-    return this.isAuthenticatedSubject.asObservable();
+    return this.isAuthenticated$.pipe(
+      first(), // ✅ Ensures we only take the first value
+      map((isAuthenticated) => {
+        console.log('Checking Auth State:', isAuthenticated); // ✅ Debugging log
+        return isAuthenticated === true; // Ensures it doesn't trigger on `null`
+      })
+    );
   }
 
   updateAuthState(user: User | null) {
     this.user = user;
-    this.isAuthenticatedSubject.next(!!user); //Update authentication status
+    this.isAuthenticatedSubject.next(user !== null); //Update authentication status
   }
 
-  async logout() {
-    try {
-      await signOut(this.auth);
-      this.updateAuthState(null); //Reset authentication state
-      this.router.navigate(['/login']);
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+  logout(): void {
+    signOut(this.auth)
+      .then(() => {
+        console.log('User logged out');
+        this.isAuthenticatedSubject.next(false); // ✅ Update authentication state
+        this.router.navigate(['/intro']); // ✅ Redirect after logout
+      })
+      .catch(error => console.error('Logout failed:', error));
   }
 }

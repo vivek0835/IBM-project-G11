@@ -167,3 +167,28 @@ button:hover {
     background-color: #ff5f87;
     transform: translateY(-3px);
 }
+
+/* ✅ Loading Spinner */
+.loader {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid white;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 5px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* ✅ Temporary Upload Message */
+  .upload-message {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: opacity 0.5s ease-in-out;
+  }  

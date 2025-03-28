@@ -180,27 +180,6 @@ button:hover {
     border-radius: 12px;
 }
 
-/* Google Sign-In Button */
-.google-btn {
-    background-color: #4caf50;
-    color: #ffffff;
-    padding: 14px;
-    margin-top: 12px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 18px;
-    font-weight: 600;
-    transition: background 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.google-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-3px);
-}
-
 /* Success Message */
 .alert-success {
     background-color: #e9f7ef;

@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
 import { DataService } from './services/data.service';
+import { HttpClientModule } from '@angular/common/http';
+import { NgxEchartsModule } from 'ngx-echarts';
+
 
 // Firebase imports
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
@@ -19,16 +22,18 @@ import { MfaComponent } from './mfa/mfa.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    DashboardComponent,
-    HomeComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    MfaComponent 
+    HttpClientModule,
+    DashboardComponent,
+    HomeComponent,
+    MfaComponent,
+    NgxEchartsModule.forRoot({ echarts: () => import('echarts') })
   ],
   providers: [
     DataService,
