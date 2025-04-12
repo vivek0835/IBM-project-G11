@@ -62,5 +62,13 @@
         </div>
       </div>
     </div>
+    <div class="word-cloud-box">
+      <h2>Word Cloud</h2>
+      <div class="word-cloud">
+        <span *ngFor="let word of wordCloudData" [ngStyle]="{'font-size.px': word.size, 'color': word.color}">
+          {{ word.text }}
+        </span>
+      </div>
+    </div>
   </div>
 </body>
