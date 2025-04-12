@@ -15,7 +15,7 @@ export class HomeComponent {
   selectedFile: File | null = null;
   uploadMessage: string = '';
   messageColor: string = '';
-  loading: boolean = false; // ✅ Loading state
+  loading: boolean = false; // Loading state
 
   constructor(private apiService: ApiService, private router: Router) {}
 
@@ -29,7 +29,7 @@ export class HomeComponent {
       return;
     }
 
-    this.loading = true; // ✅ Show loading spinner
+    this.loading = true; // Show loading spinner
 
     this.apiService.uploadCSV(this.selectedFile).subscribe({
       next: () => {
@@ -39,7 +39,7 @@ export class HomeComponent {
 
         setTimeout(() => {
           this.uploadMessage = '';
-          this.router.navigate(['/dashboard']); // ✅ Redirect after 1s
+          this.router.navigate(['/dashboard']); // Redirect after 1s
         }, 1000);
       },
       error: () => {

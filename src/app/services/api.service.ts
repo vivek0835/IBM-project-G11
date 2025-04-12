@@ -27,7 +27,7 @@ export class ApiService {
     return this.http.get(`${this.BASE_URL}/reviews`);
   }
 
-  // Optional: For single text sentiment analysis (if needed)
+  // For single text sentiment analysis (if needed), not yet implemented in the UI
   analyzeText(text: string): Observable<any> {
     return this.http.post(`${this.BASE_URL}/analyze/text`, { text });
   }

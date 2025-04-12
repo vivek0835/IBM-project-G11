@@ -9,7 +9,7 @@ import { BehaviorSubject, filter, firstValueFrom, Observable, map, first } from 
 export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean | null>(null);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable().pipe(
-    filter(value => value !== null) // ✅ Prevents null from triggering guards
+    filter(value => value !== null) // Prevents null from triggering guards
   );
   redirectUrl: string | null = null; // Store the attempted URL
   user: User | null = null;
@@ -43,9 +43,9 @@ export class AuthService {
 
   checkAuthState(): Observable<boolean> {
     return this.isAuthenticated$.pipe(
-      first(), // ✅ Ensures we only take the first value
+      first(), // Ensures we only take the first value
       map((isAuthenticated) => {
-        console.log('Checking Auth State:', isAuthenticated); // ✅ Debugging log
+        console.log('Checking Auth State:', isAuthenticated); // Debugging log
         return isAuthenticated === true; // Ensures it doesn't trigger on `null`
       })
     );
@@ -60,8 +60,8 @@ export class AuthService {
     signOut(this.auth)
       .then(() => {
         console.log('User logged out');
-        this.isAuthenticatedSubject.next(false); // ✅ Update authentication state
-        this.router.navigate(['/intro']); // ✅ Redirect after logout
+        this.isAuthenticatedSubject.next(false); // Update authentication state
+        this.router.navigate(['/intro']); // Redirect after logout
       })
       .catch(error => console.error('Logout failed:', error));
   }

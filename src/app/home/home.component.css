@@ -168,7 +168,7 @@ button:hover {
     transform: translateY(-3px);
 }
 
-/* ✅ Loading Spinner */
+/* Loading Spinner */
 .loader {
     display: inline-block;
     width: 16px;
@@ -185,7 +185,7 @@ button:hover {
     100% { transform: rotate(360deg); }
   }
   
-  /* ✅ Temporary Upload Message */
+  /* Temp Upload Message */
   .upload-message {
     font-size: 18px;
     font-weight: bold;

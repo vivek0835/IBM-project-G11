@@ -70,9 +70,9 @@ export class DashboardComponent implements OnInit {
     }
 
     setChartOptions(): void {
-        this.positiveChartOptions = this.createGaugeChart(this.positivePercentage, '#228B22'); // Teal
-        this.negativeChartOptions = this.createGaugeChart(this.negativePercentage, '#CC5500'); // Muted Red Orange
-        this.neutralChartOptions = this.createGaugeChart(this.neutralPercentage, '#ADD8E6');  // Grey Blue
+        this.positiveChartOptions = this.createGaugeChart(this.positivePercentage, '#228B22'); 
+        this.negativeChartOptions = this.createGaugeChart(this.negativePercentage, '#CC5500'); 
+        this.neutralChartOptions = this.createGaugeChart(this.neutralPercentage, '#ADD8E6'); 
     }
 
     createGaugeChart(percentage: number, color: string): any {
@@ -119,6 +119,6 @@ export class DashboardComponent implements OnInit {
     }
 
     logout(): void {
-        this.authService.logout(); // ✅ Call logout from AuthService
+        this.authService.logout();
       }
 }

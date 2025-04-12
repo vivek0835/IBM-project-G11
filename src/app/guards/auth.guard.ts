@@ -11,7 +11,7 @@ export const AuthGuard: CanActivateFn = (): Observable<boolean | import("@angula
   return authService.checkAuthState().pipe(
     take(1),
     map(isLoggedIn => {
-      console.log('AuthGuard Check:', isLoggedIn); // ✅ Debugging log
+      console.log('AuthGuard Check:', isLoggedIn); // Debugging log
       return isLoggedIn ? true : router.createUrlTree(['/login']);
     })
   );

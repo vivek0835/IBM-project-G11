@@ -7,7 +7,7 @@
     background: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient background */
     color: white; /* Text color */
     text-align: center;
-    font-family: 'Arial', sans-serif; /* Use a clean font */
+    font-family: 'Arial', sans-serif;
   }
   
   .not-found-content {

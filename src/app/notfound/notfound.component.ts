@@ -11,6 +11,6 @@ export class NotfoundComponent {
   constructor(private router: Router) {}
 
   goToLogin() {
-    this.router.navigate(['/login']); // Ensure this path matches your route configuration
+    this.router.navigate(['/login']); // path to login page
   }
 }

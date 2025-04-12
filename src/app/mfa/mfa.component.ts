@@ -25,7 +25,7 @@ export class MfaComponent implements OnInit {
   ngOnInit(): void {
     this.initializeRecaptcha();
   }
-
+  // Function to initialize reCAPTCHA
   initializeRecaptcha() {
     const auth: Auth = this.firebaseService.getAuthInstance();
     this.appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -35,7 +35,7 @@ export class MfaComponent implements OnInit {
       }
     });
   }
-
+  // Function to send the verification code to the user's phone number
   async sendVerificationCode() {
     const auth: Auth = this.firebaseService.getAuthInstance();
     try {
@@ -48,7 +48,8 @@ export class MfaComponent implements OnInit {
       this.verificationFailed.emit(error);
     }
   }
-
+  
+  // Function to verify the code entered by the user
   async verifyCode(code: string) {
     const auth: Auth = this.firebaseService.getAuthInstance();
     try {
