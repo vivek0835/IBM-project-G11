@@ -31,7 +31,8 @@ jobs:
         sed -i 's|REPLACE_WITH_FASTAPI_URL|${{ secrets.FASTAPI_BACKEND_URL }}|' src/environments/environment.ts
 
     - name: Build Angular Project
-      run: ng build --configuration production
+      run: npx ng build --configuration=production
+  
 
     - name: Deploy to Firebase
       run: firebase deploy --only hosting --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}
