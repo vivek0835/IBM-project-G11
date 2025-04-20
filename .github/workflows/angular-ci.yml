@@ -22,13 +22,15 @@ jobs:
 
     - name: Replace Sensitive Values in environment.ts
       run: |
-        sed -i 's|REPLACE_WITH_FIREBASE_API_KEY|${{ secrets.FIREBASE_API_KEY }}|' src/environments/environment.ts
-        sed -i 's|REPLACE_WITH_FIREBASE_AUTH_DOMAIN|${{ secrets.FIREBASE_AUTH_DOMAIN }}|' src/environments/environment.ts
-        sed -i 's|REPLACE_WITH_FIREBASE_PROJECT_ID|${{ secrets.FIREBASE_PROJECT_ID }}|' src/environments/environment.ts
-        sed -i 's|REPLACE_WITH_FIREBASE_STORAGE_BUCKET|${{ secrets.FIREBASE_STORAGE_BUCKET }}|' src/environments/environment.ts
-        sed -i 's|REPLACE_WITH_FIREBASE_MESSAGING_SENDER_ID|${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|' src/environments/environment.ts
-        sed -i 's|REPLACE_WITH_FIREBASE_APP_ID|${{ secrets.FIREBASE_APP_ID }}|' src/environments/environment.ts
-        sed -i 's|REPLACE_WITH_FASTAPI_URL|${{ secrets.FASTAPI_BACKEND_URL }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_API_KEY|${{ secrets.API_KEY }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_AUTH_DOMAIN|${{ secrets.AUTH_DOMAIN }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_DATABASE_URL|${{ secrets.DATABASE_URL }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_PROJECT_ID|${{ secrets.PROJECT_ID }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_STORAGE_BUCKET|${{ secrets.STORAGE_BUCKET }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_MESSAGING_SENDER_ID|${{ secrets.MESSAGING_SENDER_ID }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_APP_ID|${{ secrets.APP_ID }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_MEASUREMENT_ID|${{ secrets.MEASUREMENT_ID }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FASTAPI_URL|${{ secrets.API_URL }}|' src/environments/environment.ts
 
     - name: Build Angular Project
       run: npx ng build --configuration=production
