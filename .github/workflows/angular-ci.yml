@@ -32,6 +32,10 @@ jobs:
 
     - name: Build Angular Project
       run: npx ng build --configuration=production
+    
+    - name: Install Firebase CLI
+      run: npm install -g firebase-tools
+    
   
 
     - name: Deploy to Firebase
