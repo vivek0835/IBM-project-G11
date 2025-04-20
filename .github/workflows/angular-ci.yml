@@ -1,22 +1,18 @@
-name: Angular CI
+name: Firebase Deploy
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Setup Node
+    - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: 22.14.0
@@ -24,6 +20,18 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
+    - name: Replace Sensitive Values in environment.ts
+      run: |
+        sed -i 's|REPLACE_WITH_FIREBASE_API_KEY|${{ secrets.FIREBASE_API_KEY }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_AUTH_DOMAIN|${{ secrets.FIREBASE_AUTH_DOMAIN }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_PROJECT_ID|${{ secrets.FIREBASE_PROJECT_ID }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_STORAGE_BUCKET|${{ secrets.FIREBASE_STORAGE_BUCKET }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_MESSAGING_SENDER_ID|${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FIREBASE_APP_ID|${{ secrets.FIREBASE_APP_ID }}|' src/environments/environment.ts
+        sed -i 's|REPLACE_WITH_FASTAPI_URL|${{ secrets.FASTAPI_BACKEND_URL }}|' src/environments/environment.ts
 
     - name: Build Angular Project
-      run: npm run build -- --configuration=production
+      run: ng build --configuration production
+
+    - name: Deploy to Firebase
+      run: firebase deploy --only hosting --token ${{ secrets.FIREBASE_DEPLOY_TOKEN }}

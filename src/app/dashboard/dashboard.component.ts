@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { RouterModule, Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { ApiService } from '../services/api.service';
 import { Review } from '../models/review.model';
 import { LinebreakPipe } from '../linebreak.pipe';
 import { AuthService } from '../services/auth.service';
+import WordCloud from 'wordcloud';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,8 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  @ViewChild('wordCloudCanvas', { static: false }) wordCloudCanvas!: ElementRef<HTMLCanvasElement>;
+
   totalReviews = 0;
   positivePercentage = 0;
   negativePercentage = 0;
@@ -28,9 +31,6 @@ export class DashboardComponent implements OnInit {
   positiveChartOptions: any = {};
   negativeChartOptions: any = {};
   neutralChartOptions: any = {};
-
-  // Word Cloud data for custom display
-  wordCloudData: { text: string; size: number; color: string }[] = [];
 
   constructor(private apiService: ApiService, private router: Router, private authService: AuthService) {}
 
@@ -119,7 +119,7 @@ export class DashboardComponent implements OnInit {
 
   generateWordCloud(): void {
     const wordCounts: { [word: string]: number } = {};
-  
+
     this.reviews.forEach(review => {
       const words = review.review_text.toLowerCase().match(/\b\w{4,}\b/g);
       if (words) {
@@ -128,16 +128,28 @@ export class DashboardComponent implements OnInit {
         });
       }
     });
-  
-    this.wordCloudData = Object.entries(wordCounts)
-      .map(([text, count]) => ({
-        text,
-        size: 10 + count * 0.05,  // smaller base and multiplier
-        color: this.getRandomColor()
-      }))
-      .sort((a, b) => b.size - a.size)
-      .slice(0, 50);
-  }  
+
+    const entries = Object.entries(wordCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 100);
+
+    const wordList: [string, number][] = entries.map(([text, size]) => [text, size]);
+
+
+    setTimeout(() => {
+      if (this.wordCloudCanvas) {
+        WordCloud(this.wordCloudCanvas.nativeElement, {
+          list: wordList,
+          gridSize: 8,
+          weightFactor: 3,
+          fontFamily: 'Roboto Slab',
+          color: () => this.getRandomColor(),
+          rotateRatio: 0.5,
+          backgroundColor: '#ffffff',
+        });
+      }
+    }, 200);
+  }
 
   getRandomColor(): string {
     const colors = ['#ff6b81', '#1e90ff', '#ffa502', '#2ed573', '#a55eea', '#ff4757'];
