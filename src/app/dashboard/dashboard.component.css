@@ -47,8 +47,9 @@ body {
 /* Main Content */
 .content {
     flex-grow: 1;
-    padding: 1px;
+    padding: 1px 16px 16px;
     overflow-y: auto;
+    overflow-x: hidden;
     font-family: 'Roboto Slab', serif !important;
 }
 
@@ -145,7 +146,7 @@ body {
 /* Review Category Styling */
 .review-category {
     flex: 1;
-    min-width: 300px; /* Ensures a minimum width for smaller screens */
+    min-width: 160px; /* Ensures a minimum width for smaller screens */
     background-color: #f9f9f9;
     padding: 15px;
     border-radius: 8px;
@@ -268,3 +269,63 @@ body {
 .word-cloud span:hover {
     transform: scale(1.2);
 }
+
+
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Roboto Slab', serif !important;
+  }
+  
+  .loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #ff6b6b;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .dashboard-wrapper {
+    display: flex;
+  }
+ 
+/* refresh button */
+
+.refresh-btn {
+    background-color: #aed9e0;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-family: 'Roboto Slab', serif !important;
+    margin-left: 10px;
+  }
+  
+  .refresh-btn:hover {
+    background-color: #8ac4d0;
+    transform: translateY(-2px);
+  }

@@ -40,7 +40,7 @@ export class HomeComponent {
         setTimeout(() => {
           this.uploadMessage = '';
           this.router.navigate(['/dashboard']); // Redirect after 1s
-        }, 1000);
+        }, 2000);
       },
       error: () => {
         this.loading = false;
