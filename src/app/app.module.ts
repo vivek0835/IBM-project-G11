@@ -14,11 +14,14 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
+import { FIREBASE_OPTIONS } from '@angular/fire/compat';
+
 
 // FormsModule & ReactiveFormsModule imports
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MfaComponent } from './mfa/mfa.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,8 @@ import { MfaComponent } from './mfa/mfa.component';
   providers: [
     DataService,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideAuth(() => getAuth())
+    provideAuth(() => getAuth()),
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebaseConfig }
   ],
   bootstrap: [AppComponent]
 })

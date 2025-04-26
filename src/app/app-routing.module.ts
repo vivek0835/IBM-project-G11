@@ -7,6 +7,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
 import { NotfoundComponent } from './notfound/notfound.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'intro', pathMatch: 'full' },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },  // Protected route
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },  // Protected route
   { path: 'terms', component: TermsAndConditionsComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: '**', component: NotfoundComponent }
 ];
 

@@ -2,20 +2,21 @@ import { Component, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Auth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from '@angular/fire/auth';
+import { Auth, UserCredential, User, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, sendEmailVerification } from '@angular/fire/auth';
 import { MfaComponent } from '../mfa/mfa.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SecurityContext } from '@angular/core';
 import { FirebaseService } from '../firebase.service';
 import { PhoneAuthProvider, signInWithCredential } from '@firebase/auth';
 import { AuthService } from '../services/auth.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MfaComponent]
+  imports: [CommonModule, FormsModule, MfaComponent, RouterModule]
 })
 export class LoginComponent {
   email: string = '';
@@ -26,12 +27,12 @@ export class LoginComponent {
   registerEmail: string = '';
   registerPassword: string = '';
   registerConfirmPassword: string = '';
-  registerPhoneNumber: string = '+91'+'';
+  registerPhoneNumber: string = '+91';
   termsAccepted: boolean = false;
-  private verificationId: string = '';  // Store the verification ID received from Firebase
-  registrationInProgress: boolean = false;  // To track if registration is ongoing
-  verificationSuccess: EventEmitter<void> = new EventEmitter(); // To emit success events
-  verificationFailed: EventEmitter<any> = new EventEmitter(); // To emit failure events
+  private verificationId: string = '';
+  registrationInProgress: boolean = false;
+  verificationSuccess: EventEmitter<void> = new EventEmitter();
+  verificationFailed: EventEmitter<any> = new EventEmitter();
 
   isVerifyingPhone: boolean = false;
   message: string = '';
@@ -41,23 +42,20 @@ export class LoginComponent {
     private router: Router,
     private auth: Auth,
     private firebaseService: FirebaseService,
-    private authService: AuthService, // Inject AuthService
+    private authService: AuthService,
     private sanitizer: DomSanitizer
   ) {}
 
-  // Toggle between Login and Register forms
   toggleForm() {
     this.showLoginForm = !this.showLoginForm;
-    this.message = ''; // Clear message when toggling forms
+    this.clearMessage();
   }
 
-  //Shows the message
   clearMessage() {
     this.message = '';
     this.messageType = '';
   }
 
-  //Set Message Function
   setMessage(message: string, type: 'success' | 'error') {
     this.message = this.sanitizer.sanitize(SecurityContext.HTML, message) || '';
     this.messageType = type;
@@ -66,7 +64,6 @@ export class LoginComponent {
     }, 2000);
   }
 
-  // Handle Login with Firebase
   async login() {
     if (!this.email || !this.password) {
       this.setMessage('Please enter both email and password.', 'error');
@@ -74,26 +71,40 @@ export class LoginComponent {
     }
   
     try {
-      await this.authService.login(this.email, this.password); //Use AuthService login
+      const userCredential: UserCredential = await this.authService.login(this.email, this.password);
+      const user: User = userCredential.user;
+  
+      // Important: Reload the user to get fresh status
+      await user.reload();
+      
+      if (!user.emailVerified) {
+        await sendEmailVerification(user);
+        this.setMessage('Please verify your email. A verification email has been sent.', 'error');
+        await this.auth.signOut();  // logout user immediately
+        return;
+      }
+  
+      await this.firebaseService.logLoginEvent(this.email, 'email/password', true);
       sessionStorage.setItem('isLoggedIn', 'true');
+  
       if (this.rememberMe) {
         sessionStorage.setItem('email', this.email);
       }
-      this.setMessage('Login successful!', 'success');
   
-      // Redirect to the intended URL or default to '/home'
+      this.setMessage('Login successful!', 'success');
       setTimeout(() => {
         const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
         this.router.navigate([redirectUrl]);
       }, 1000);
+  
     } catch (error: any) {
+      await this.firebaseService.logLoginEvent(this.email, 'email/password', false);
       console.error('Login error:', error);
       this.setMessage(`Login failed: ${error.message}`, 'error');
     }
   }
   
 
-  // Handle Registration with Firebase and MFA
   async register() {
     if (!this.termsAccepted) {
       this.setMessage('You must agree to the terms and conditions.', 'error');
@@ -110,11 +121,10 @@ export class LoginComponent {
       return;
     }
 
-    this.isVerifyingPhone = true; // Indicate that the phone number is being verified
+    this.isVerifyingPhone = true;
   }
 
   async verifyCode(code: string) {
-    const auth: Auth = this.firebaseService.getAuthInstance();
     try {
       if (!this.verificationId || !code) {
         console.error('Verification ID or code is missing');
@@ -122,68 +132,68 @@ export class LoginComponent {
       }
 
       const credential = PhoneAuthProvider.credential(this.verificationId, code);
-      await signInWithCredential(auth, credential); 
+      await signInWithCredential(this.auth, credential);
+
       console.log('Phone number verified successfully');
-      
-      // Wait for successful verification before triggering registration
-      this.onMfaSuccess();  // Now we can safely call the registration process
+      this.onMfaSuccess();
     } catch (error) {
       console.error('Failed to verify the code:', error);
       this.verificationFailed.emit(error);
-      this.registrationInProgress = false; // Reset on failure
+      this.registrationInProgress = false;
     }
   }
 
-  // Handle MFA Success
   async onMfaSuccess() {
     try {
-      // Make sure the phone number verification was successful before proceeding.
       if (!this.registerEmail || !this.registerPassword) {
         console.error('Email or password is missing.');
         this.setMessage('Please provide a valid email and password.', 'error');
         return;
       }
 
-      // Create the user with email/password after phone verification
-      await createUserWithEmailAndPassword(this.auth, this.registerEmail, this.registerPassword);
-      this.setMessage('Registration successful! Now login.', 'success');
+      const userCredential: UserCredential = await createUserWithEmailAndPassword(this.auth, this.registerEmail, this.registerPassword);
+      const user: User = userCredential.user;
+
+      if (user) {
+        await sendEmailVerification(user); // Call imported function, pass user object  ;
+        this.setMessage('Registration successful! A verification email has been sent. Please verify your email before logging in.', 'success');
+      }
+
       this.isVerifyingPhone = false;
-      this.toggleForm(); // Switch to login form
+      this.toggleForm();
     } catch (error: any) {
       console.error('Registration error:', error);
       this.setMessage(`Registration failed: ${error.message}`, 'error');
     }
   }
 
-  // Handle MFA Failure
   onMfaFailed(error: any) {
     console.error('MFA verification failed:', error);
     this.setMessage(`MFA verification failed: ${error.message}`, 'error');
     this.isVerifyingPhone = false;
   }
 
-  // Handle Google Sign-In
   async loginWithGoogle() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(this.auth, provider);
-  
+
       if (result.user) {
         this.setMessage(`Welcome ${result.user.displayName}`, 'success');
-        
-        //Use the new public method to update authentication state
+        await this.firebaseService.logLoginEvent(result.user.email || 'Unknown', 'google', true);
+
         this.authService.updateAuthState(result.user);
-  
-        // Redirect to the intended URL or default to '/home'
+
         setTimeout(() => {
           const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
           this.router.navigate([redirectUrl]);
         }, 2000);
       }
     } catch (error: any) {
+      await this.firebaseService.logLoginEvent('Unknown', 'google', false);
       console.error('Google Sign-In Error:', error);
       this.setMessage(`Login failed: ${error.message}`, 'error');
     }
-  } 
+  }
 
 }

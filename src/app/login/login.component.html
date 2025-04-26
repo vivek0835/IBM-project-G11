@@ -26,7 +26,10 @@
                     <button (click)="loginWithGoogle()" class="google-btn">
                         Sign in with Google
                     </button>
-
+                    <!-- Below the Google button -->
+                    <div class="forgot-password-link">
+                        <a [routerLink]="['/forgot-password']">Forgot Password?</a>
+                    </div>
                     <span class="toggle-link" (click)="toggleForm()">Don't have an account? Register</span>
                 </div>
 
