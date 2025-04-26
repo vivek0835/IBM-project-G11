@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { environment } from '../environments/environment';
-import { Firestore, getFirestore, collection, doc, setDoc } from '@angular/fire/firestore';
+import { Firestore, getFirestore, collection, doc, runTransaction, setDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -23,9 +23,6 @@ export class FirebaseService {
   }
 
   async logLoginEvent(email: string, loginMethod: string, success: boolean): Promise<void> {
-    // Sanitize the email to make it suitable for use as a Firestore document ID.
-    const sanitizedEmail = email.replace(/[.#\[\]\/]/g, '_'); // Replace invalid characters with underscores.
-
     const logData = {
       email: email || 'Unknown',
       timestamp: new Date().toISOString(),
@@ -39,11 +36,36 @@ export class FirebaseService {
     };
 
     try {
-      const logRef = doc(collection(this.firestore, 'loginLogs'), sanitizedEmail); // Use doc() with sanitized email.
-      await setDoc(logRef, logData); // Use setDoc() to specify the document ID.
-      console.log('Login log saved to Firestore with ID:', sanitizedEmail, logData);
-    } catch (error) {
+      const logRef = collection(this.firestore, 'loginLogs');
+      const counterRef = doc(this.firestore, 'counters', 'logCounter');
+
+      let logNumber: number; // Declare logNumber outside the transaction
+      try {
+        logNumber = await runTransaction(this.firestore, async (transaction) => {
+          const counterDoc = await transaction.get(counterRef);
+          if (!counterDoc.exists()) {
+            transaction.set(counterRef, { lastLogNumber: 0 });
+            return 1;
+          }
+          const lastLogNumber = counterDoc.data()['lastLogNumber'];
+          const newLogNumber = lastLogNumber + 1;
+          transaction.update(counterRef, { lastLogNumber: newLogNumber });
+          return newLogNumber;
+        });
+      } catch (transactionError) {
+        console.error("Transaction Error:", transactionError);
+        throw transactionError; // Re-throw the error
+      }
+
+
+      const logId = `log_${logNumber}`;
+      const logDocRef = doc(logRef, logId);
+      await setDoc(logDocRef, logData);
+
+      console.log('Login log saved to Firestore with ID:', logId, logData);
+    } catch (error: any) {
       console.error('Error logging login event:', error);
+      throw error; // Re-throw the error
     }
   }
 }
