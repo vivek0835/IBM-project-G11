@@ -2,7 +2,16 @@ import { Component, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Auth, UserCredential, User, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, sendEmailVerification } from '@angular/fire/auth';
+import {
+  Auth,
+  UserCredential,
+  User,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  sendEmailVerification
+} from '@angular/fire/auth';
 import { MfaComponent } from '../mfa/mfa.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SecurityContext } from '@angular/core';
@@ -67,43 +76,42 @@ export class LoginComponent {
   async login() {
     if (!this.email || !this.password) {
       this.setMessage('Please enter both email and password.', 'error');
+      await this.firebaseService.logLoginEvent(this.email, 'email/password', false);
       return;
     }
-  
+
     try {
       const userCredential: UserCredential = await this.authService.login(this.email, this.password);
       const user: User = userCredential.user;
-  
-      // Important: Reload the user to get fresh status
+
       await user.reload();
-      
+
       if (!user.emailVerified) {
         await sendEmailVerification(user);
         this.setMessage('Please verify your email. A verification email has been sent.', 'error');
-        await this.auth.signOut();  // logout user immediately
+        await this.firebaseService.logLoginEvent(this.email, 'email/password', false);
+        await this.auth.signOut();
         return;
       }
-  
+
       await this.firebaseService.logLoginEvent(this.email, 'email/password', true);
       sessionStorage.setItem('isLoggedIn', 'true');
-  
+
       if (this.rememberMe) {
         sessionStorage.setItem('email', this.email);
       }
-  
+
       this.setMessage('Login successful!', 'success');
       setTimeout(() => {
         const redirectUrl = this.authService.redirectUrl ? this.authService.redirectUrl : '/home';
         this.router.navigate([redirectUrl]);
       }, 1000);
-  
     } catch (error: any) {
       await this.firebaseService.logLoginEvent(this.email, 'email/password', false);
       console.error('Login error:', error);
       this.setMessage(`Login failed: ${error.message}`, 'error');
     }
   }
-  
 
   async register() {
     if (!this.termsAccepted) {
@@ -155,7 +163,7 @@ export class LoginComponent {
       const user: User = userCredential.user;
 
       if (user) {
-        await sendEmailVerification(user); // Call imported function, pass user object  ;
+        await sendEmailVerification(user);
         this.setMessage('Registration successful! A verification email has been sent. Please verify your email before logging in.', 'success');
       }
 
@@ -195,5 +203,4 @@ export class LoginComponent {
       this.setMessage(`Login failed: ${error.message}`, 'error');
     }
   }
-
 }
